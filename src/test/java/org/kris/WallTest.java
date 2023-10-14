@@ -20,15 +20,20 @@ class WallTest {
         Optional<Block> result = wall.findBlockByColor(color);
 
         if (found) {
-            String message = "Couldn't find any block by provided color";
+            String message = "Couldn't find any block by provided color.";
             assertTrue(result.isPresent(), message);
             assertEquals(color.toLowerCase(), result.get().getColor().toLowerCase(), message);
         } else {
-            assertFalse(result.isPresent(), "No block should be found for the provided color");
+            assertFalse(result.isPresent(), "No block should be found for the provided color.");
         }
     }
 
-
+    @ParameterizedTest
+    @MethodSource("provideWallsForFindByMaterial")
+    void testFindBlocksByMaterial(Structure wall, String material, int expectedSize) {
+        List<Block> result = wall.findBlocksByMaterial(material);
+        assertEquals(expectedSize, result.size(), "Actual blocks count is not equal to expected count.");
+    }
 
     private static Structure buildWall() {
         CompositeBlock compositeBlock = new CompositeBlockImpl("black", "mix");
@@ -54,6 +59,19 @@ class WallTest {
                 Arguments.of(wallWithGrayAndWhite, "black", true),
                 Arguments.of(wallWithGrayAndWhite, "pink", false),
                 Arguments.of(emptyWall, "white", false)
+        );
+    }
+
+    private static Stream<Arguments> provideWallsForFindByMaterial() {
+        Structure wall = buildWall();
+        Structure emptyWall = new Wall(new ArrayList<>());
+
+        return Stream.of(
+                Arguments.of(wall, "oak", 2),
+                Arguments.of(wall, "andesite", 1),
+                Arguments.of(wall, "mix", 1),
+                Arguments.of(wall, "spruce", 0),
+                Arguments.of(emptyWall, "oak", 0)
         );
     }
 
