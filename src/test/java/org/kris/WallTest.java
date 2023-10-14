@@ -35,6 +35,13 @@ class WallTest {
         assertEquals(expectedSize, result.size(), "Actual blocks count is not equal to expected count.");
     }
 
+    @ParameterizedTest
+    @MethodSource("provideWallsForCountBlocks")
+    void testCountBlocks(Structure wall, int expectedAmount) {
+        int result = wall.count();
+        assertEquals(expectedAmount, result, "Actual blocks count is not equal to expected count.");
+    }
+
     private static Structure buildWall() {
         CompositeBlock compositeBlock = new CompositeBlockImpl("black", "mix");
         compositeBlock.addBlock(new WoodenBlock("brown", "oak"));
@@ -75,5 +82,14 @@ class WallTest {
         );
     }
 
+    private static Stream<Arguments> provideWallsForCountBlocks() {
+        Structure wall = buildWall();
+        Structure emptyWall = new Wall(new ArrayList<>());
+
+        return Stream.of(
+                Arguments.of(wall, 5),
+                Arguments.of(emptyWall, 0)
+        );
+    }
 }
 

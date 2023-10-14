@@ -23,7 +23,15 @@ public class Wall implements Structure {
 
     @Override
     public int count() {
-        return 0;
+        int blockAmount = 0;
+        for (Block block : blocks) {
+            if (block instanceof CompositeBlock) {
+                blockAmount += ((CompositeBlock) block).getBlocks().size() + 1;
+                continue;
+            }
+            blockAmount++;
+        }
+        return blockAmount;
     }
 
     private Optional<Block> findBlockByColorRecursively(String color, List<Block> blockList) {
